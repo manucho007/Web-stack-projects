@@ -16,11 +16,13 @@ export default class ContentArea extends LitElement {
       popupOpen: Boolean,
       togglePopup: Function,
       saveContact: Function,
+      deleteContact: Function,
+      allContacts: Array,
     };
   }
 
   firstUpdated() {
-    console.log(this.popupOpen);
+    console.log(this.allContacts);
   }
   render() {
     return html`
@@ -37,8 +39,12 @@ export default class ContentArea extends LitElement {
           .togglePopup="${this.togglePopup}"
           .saveContact="${this.saveContact}"
         ></form-popup>
-        <favorites-list></favorites-list>
-        <contacts-list> </contacts-list>
+        <favorites-list .allContacts="${this.allContacts}"></favorites-list>
+        <contacts-list
+          .allContacts="${this.allContacts}"
+          .deleteContact="${this.deleteContact}"
+        >
+        </contacts-list>
       </section>
     `;
   }

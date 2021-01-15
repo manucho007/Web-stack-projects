@@ -6,14 +6,52 @@ import {
 export default class ContactsList extends LitElement {
   constructor() {
     super();
+    this.displayAllContacts = this.displayAllContacts.bind(this);
   }
   static get properties() {
     return {
-      color: { type: String },
+      allContacts: Array,
+      deleteContact: Function,
     };
   }
 
-  firstUpdated() {}
+  firstUpdated() {
+    console.log(this.allContacts);
+  }
+
+  deleteContact() {}
+  // Hanldes the display of all the contacts passed
+  displayAllContacts() {
+    return this.allContacts.map((contact, index) => {
+      return html`
+        <div class="contact">
+          <div class="user-img"></div>
+          <div class="fullname">
+            <span class="text">${contact.first_name} ${contact.last_name}</span>
+            <span class="sub">Full Name</span>
+          </div>
+          <div class="number">
+            <span class="text">${contact.phone_number}</span>
+            <span class="sub">Phone number</span>
+          </div>
+          <div class="state">
+            <span class="text">${contact.city}</span>
+            <span class="sub">City</span>
+          </div>
+          <div class="category">
+            <span class="text">${contact.category}</span>
+            <span class="sub">Category</span>
+          </div>
+          <div
+            class="delete-btn"
+            @click="${this.deleteContact.bind(null, index)}"
+          >
+            Delete
+          </div>
+        </div>
+      `;
+    });
+  }
   render() {
     return html`
       <style>
@@ -34,6 +72,8 @@ export default class ContactsList extends LitElement {
           border-radius: 10px;
           transition: all 0.4s ease-in-out;
           cursor: pointer;
+          position: relative;
+          overflow: hidden;
         }
         .contact .user-img {
           background-image: url('https://uifaces.co/our-content/donated/NY9hnAbp.jpg');
@@ -72,47 +112,27 @@ export default class ContactsList extends LitElement {
           text-align: center;
           margin: 5px 0;
         }
+        .delete-btn {
+          position: absolute;
+          height: 100%;
+          right: 0;
+          padding: 20px;
+          color: white;
+          background: red;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          transform: translate3d(100%, 0, 0);
+          transition: all 0.4s ease-in-out;
+        }
+        .contact:hover .delete-btn {
+          transform: translate3d(0, 0, 0);
+        }
       </style>
       <section class="contacts">
         <h2>Contacts</h2>
-        <div class="contact">
-          <div class="user-img"></div>
-          <div class="fullname">
-            <span class="text">Manuel Rodriguez</span>
-            <span class="sub">Full Name</span>
-          </div>
-          <div class="number">
-            <span class="text">+79656052283</span>
-            <span class="sub">Phone number</span>
-          </div>
-          <div class="state">
-            <span class="text">Kazan</span>
-            <span class="sub">City</span>
-          </div>
-          <div class="category">
-            <span class="text">Family</span>
-            <span class="sub">Category</span>
-          </div>
-        </div>
-        <div class="contact">
-          <div class="user-img"></div>
-          <div class="fullname">
-            <span class="text">Manuel Rodriguez</span>
-            <span class="sub">Full Name</span>
-          </div>
-          <div class="number">
-            <span class="text">+79656052283</span>
-            <span class="sub">Phone number</span>
-          </div>
-          <div class="state">
-            <span class="text">Kazan</span>
-            <span class="sub">City</span>
-          </div>
-          <div class="category">
-            <span class="text">Family</span>
-            <span class="sub">Category</span>
-          </div>
-        </div>
+
+        ${this.displayAllContacts()}
       </section>
     `;
   }

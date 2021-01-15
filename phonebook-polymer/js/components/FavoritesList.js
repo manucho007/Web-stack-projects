@@ -6,11 +6,42 @@ import {
 export default class FavoritesList extends LitElement {
   constructor() {
     super();
+    this.displayFavorites = this.displayFavorites.bind(this);
   }
   static get properties() {
     return {
-      color: { type: String },
+      allContacts: Array,
     };
+  }
+
+  displayFavorites() {
+    return this.allContacts.map((contact) => {
+      if (contact.favorites === 'yes') {
+        return html`
+          <div class="card">
+            <div class="user-img"></div>
+            <div class="fullname">
+              <span class="text"
+                >${contact.first_name} ${contact.last_name}</span
+              >
+              <span class="sub">Full Name</span>
+            </div>
+            <div class="number">
+              <span class="text">${contact.phone_number}</span>
+              <span class="sub">Phone number</span>
+            </div>
+            <div class="state">
+              <span class="text">${contact.city}</span>
+              <span class="sub">City</span>
+            </div>
+            <div class="category">
+              <span class="text">${contact.category}</span>
+              <span class="sub">Category</span>
+            </div>
+          </div>
+        `;
+      }
+    });
   }
 
   firstUpdated() {}
@@ -96,7 +127,8 @@ export default class FavoritesList extends LitElement {
       </style>
       <section class="favorites">
         <h2>Favorites</h2>
-        <div class="card">
+        ${this.displayFavorites()}
+        <!-- <div class="card">
           <div class="user-img"></div>
           <div class="fullname">
             <span class="text">Manuel Rodriguez</span>
@@ -114,45 +146,7 @@ export default class FavoritesList extends LitElement {
             <span class="text">Family</span>
             <span class="sub">Category</span>
           </div>
-        </div>
-        <div class="card">
-          <div class="user-img"></div>
-          <div class="fullname">
-            <span class="text">Manuel Rodriguez</span>
-            <span class="sub">Full Name</span>
-          </div>
-          <div class="number">
-            <span class="text">+79656052283</span>
-            <span class="sub">Phone number</span>
-          </div>
-          <div class="state">
-            <span class="text">Kazan</span>
-            <span class="sub">City</span>
-          </div>
-          <div class="category">
-            <span class="text">Family</span>
-            <span class="sub">Category</span>
-          </div>
-        </div>
-        <div class="card">
-          <div class="user-img"></div>
-          <div class="fullname">
-            <span class="text">Manuel Rodriguez</span>
-            <span class="sub">Full Name</span>
-          </div>
-          <div class="number">
-            <span class="text">+79656052283</span>
-            <span class="sub">Phone number</span>
-          </div>
-          <div class="state">
-            <span class="text">Kazan</span>
-            <span class="sub">City</span>
-          </div>
-          <div class="category">
-            <span class="text">Family</span>
-            <span class="sub">Category</span>
-          </div>
-        </div>
+        </div> -->
       </section>
     `;
   }

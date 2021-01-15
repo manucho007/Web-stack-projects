@@ -10,6 +10,7 @@ export default class FormPopup extends LitElement {
     super();
     this.formData = {};
     this.change = this.change.bind(this);
+    this.submitForm = this.submitForm.bind(this);
     this.newValue = '';
   }
   static get properties() {
@@ -19,6 +20,7 @@ export default class FormPopup extends LitElement {
     };
   }
 
+  //   Replacement for _firstRendered()
   firstUpdated() {}
   updated() {
     this.popupOpen ? (this.newValue = 'active') : (this.newValue = ' ');
@@ -26,10 +28,21 @@ export default class FormPopup extends LitElement {
     console.log(this.popupOpen);
   }
 
+  //   Not damn working
   closeDamnScreen() {
     this.newValue = '';
     console.log('CLick');
   }
+
+  //   Handle the submissions in the form
+
+  submitForm(event) {
+    event.preventDefault();
+    this.saveContact(this.formData);
+    this.formData = {};
+  }
+
+  //   Handle changes in the form
   change(event) {
     let formData = {};
     let name = event.target.name;
@@ -153,7 +166,7 @@ export default class FormPopup extends LitElement {
         }
       </style>
       <section class="form-popup ${this.newValue}">
-        <form>
+        <form @submit="${this.submitForm}">
           <div class="closing-btn">
             <h1 @click="${this.closeDamnScreen}">X</h1>
           </div>
@@ -185,6 +198,18 @@ export default class FormPopup extends LitElement {
           <div class="form-group state">
             <label for="state">state</label>
             <input type="text" name="state" @keyup="${this.change}" />
+          </div>
+          <div class="form-group phone_number">
+            <label for="phone_number">Phone Number</label>
+            <input type="text" name="phone_number" @keyup="${this.change}" />
+          </div>
+          <div class="form-group category">
+            <label for="category">category</label>
+            <input type="text" name="category" @keyup="${this.change}" />
+          </div>
+          <div class="form-group favorites">
+            <label for="favorites">favorites</label>
+            <input type="text" name="favorites" @keyup="${this.change}" />
           </div>
           <div class="button">
             <button type="submit">Add Contact</button>
