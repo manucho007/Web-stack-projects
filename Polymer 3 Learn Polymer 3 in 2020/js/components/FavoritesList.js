@@ -17,6 +17,7 @@ export default class FavoritesList extends LitElement {
   render() {
     return html`
       <style>
+        @import '/css/global.css';
         .favorites {
           max-width: 800px;
           display: grid;

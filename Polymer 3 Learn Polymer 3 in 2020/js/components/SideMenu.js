@@ -10,6 +10,7 @@ export default class SideMenu extends LitElement {
   static get properties() {
     return {
       color: { type: String },
+      togglePopup: Function,
     };
   }
 
@@ -17,6 +18,7 @@ export default class SideMenu extends LitElement {
   render() {
     return html`
       <style>
+        @import '/css/global.css';
         #side-menu {
           background: #323759;
           height: 100vh;
@@ -53,7 +55,9 @@ export default class SideMenu extends LitElement {
         <div class="menu">
           <div class="title">Contacts</div>
           <nav>
-            <a href="#"><span class="icon"> + </span> Add contact</a>
+            <a href="#" @click="${this.togglePopup}"
+              ><span class="icon"> + </span> Add contact</a
+            >
             <a href="#"><span class="icon"> + </span> Add contact</a>
             <a href="#"><span class="icon"> + </span> Add contact</a>
           </nav>
