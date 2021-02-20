@@ -1,0 +1,12 @@
+{
+  "name": "understanding-ts",
+  "version": "1.0.0",
+  "description": "Project of TS",
+  "main": "app.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "yarn build --watch --preserveWatchOutput"
+  },
+  "author": "Manuel Rodriguez",
+  "license": "MIT"
+}
