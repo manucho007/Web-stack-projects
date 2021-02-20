@@ -65,14 +65,14 @@ const isOlder = (user: User, checkAge: number): boolean => {
   return checkAge > user.age;
 };
 
-function add(n1: number, n2: number): number {
+function addN(n1: number, n2: number): number {
   return n1 + n2;
 }
 
 // Function type
 // let combineValues: Function;
 let combineValues: (a: number, b: number) => number;
-combineValues = add; // OK
+combineValues = addN; // OK
 combineValues(5, 12);
 
 // Callback types

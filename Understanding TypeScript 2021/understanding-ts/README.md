@@ -19,3 +19,6 @@
 - Discriminated Unions
 - Type Casting
 - Function overloads 
+- Optional Chaining
+- Index Properties
+- Nullish Coalessing
