@@ -22,3 +22,11 @@
 - Optional Chaining
 - Index Properties
 - Nullish Coalessing
+
+### Generics
+- Generic Function and classes
+- Constraints
+- Special TS Types
+- Keyof constraint
+- Partials
+- Readonly
