@@ -40,7 +40,11 @@ export class LoginComponent implements OnInit {
         // Tap allows to introduce side effects
         tap((user) => {
           console.log(user);
-          this.store.dispatch(login({ user }));
+
+          const newLoginAction = login({ user });
+          // console.log("New Login Action:", newLoginAction);
+
+          this.store.dispatch(newLoginAction);
 
           this.router.navigateByUrl("/courses");
         })
