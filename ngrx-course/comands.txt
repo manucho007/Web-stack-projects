@@ -1,0 +1,4 @@
+ng add @ngrx/store
+ng add @ngrx/store-devtools
+
+ng generate store auth/Auth --module auth.module.ts
