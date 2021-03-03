@@ -1,8 +1,14 @@
-import { createSelector } from "@ngrx/store";
+import { createFeatureSelector, createSelector } from "@ngrx/store";
+import { AuthState } from "./reducers";
+
+// Provides type safety for the createselector
+export const selectAuthState = createFeatureSelector<AuthState>("auth");
 
 // This is a memoized function
 export const isLoggedIn = createSelector(
-  (state) => state["auth"],
+  // Without ts typesafety untill we implement the createFeatureSelector
+  // (state) => state["auth"],
+  selectAuthState,
   (auth) => !!auth.user
 );
 
