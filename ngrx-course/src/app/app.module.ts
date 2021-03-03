@@ -56,6 +56,7 @@ const routes: Routes = [
       maxAge: 25,
       logOnly: environment.production,
     }),
+    EffectsModule.forRoot([]),
   ],
   bootstrap: [AppComponent],
 })
