@@ -4,11 +4,12 @@ import {
   Resolve,
   RouterStateSnapshot,
 } from "@angular/router";
-import { Store } from "@ngrx/store";
+import { select, Store } from "@ngrx/store";
 import { Observable } from "rxjs";
-import { finalize, first, tap } from "rxjs/operators";
+import { filter, finalize, first, tap } from "rxjs/operators";
 import { AppState } from "../reducers";
 import { loadAllCourses } from "./course.actions";
+import { areCoursesLoaded } from "./courses.selectors";
 
 // The router resolver is a special serice that runs before the router completes it's transition
 // If there is something wrong fetching the data then the navigation will be canceled
@@ -21,13 +22,16 @@ export class CoursesResolver implements Resolve<any> {
     state: RouterStateSnapshot
   ): Observable<any> {
     return this.store.pipe(
-      tap(() => {
-        if (!this.loading) {
+      select(areCoursesLoaded),
+      tap((coursesLoaded) => {
+        if (!this.loading && !coursesLoaded) {
           this.loading = true;
           this.store.dispatch(loadAllCourses());
         }
       }),
+      filter((coursesLoaded) => coursesLoaded),
       // It will wait for the obs to emmit one value then the obs will be completed
+      // Will terminate when the coursesLoaded are set to true
       first(),
       finalize(() => (this.loading = false))
     );
