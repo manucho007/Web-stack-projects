@@ -52,9 +52,14 @@ export const coursesRoutes: Routes = [
   },
 ];
 
-// We'll create an entitymetadatamap
+// We'll create an entitymetadatamap and set up optimistic updates
 const entityMetadata: EntityMetadataMap = {
-  Course: {},
+  Course: {
+    sortComparer: compareCourses,
+    entityDispatcherOptions: {
+      optimisticUpdate: true,
+    },
+  },
 };
 
 @NgModule({
