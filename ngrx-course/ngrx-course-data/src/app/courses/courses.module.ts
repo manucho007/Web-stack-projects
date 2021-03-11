@@ -31,15 +31,24 @@ import { compareCourses, Course } from "./model/course";
 
 import { compareLessons, Lesson } from "./model/lesson";
 import { CourseEntityService } from "./services/course-entity.service";
+import { CoursesResolver } from "./services/courses.resolver";
+import { CoursesDataService } from "./services/courses-data.service";
 
+// PLug our resolvers here
 export const coursesRoutes: Routes = [
   {
     path: "",
     component: HomeComponent,
+    resolve: {
+      courses: CoursesResolver,
+    },
   },
   {
     path: ":courseUrl",
     component: CourseComponent,
+    resolve: {
+      courses: CoursesResolver,
+    },
   },
 ];
 
@@ -81,12 +90,23 @@ const entityMetadata: EntityMetadataMap = {
     CourseComponent,
   ],
   entryComponents: [EditCourseDialogComponent],
-  providers: [CoursesHttpService, CourseEntityService],
+  providers: [
+    CoursesHttpService,
+    CourseEntityService,
+    CoursesResolver,
+    CoursesDataService,
+  ],
 })
 export class CoursesModule {
   // We'll inject the entityMetadamap
   // We associated the course entity to this lazy loaded module
-  constructor(private eds: EntityDefinitionService) {
+  constructor(
+    private eds: EntityDefinitionService,
+    private entityDataService: EntityDataService,
+    private coursesDataService: CoursesDataService
+  ) {
     eds.registerMetadataMap(entityMetadata);
+    // Now it knows not to do its' default behaviour and should follow the custom parameters
+    entityDataService.registerService("Course", coursesDataService);
   }
 }
