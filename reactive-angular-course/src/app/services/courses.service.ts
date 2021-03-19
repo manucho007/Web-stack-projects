@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { Course } from "../model/course";
 import { map, shareReplay } from "rxjs/operators";
+import { Lesson } from "../model/lesson";
 
 // It's a stateless service without access to the data, just will return observables to the view layer
 @Injectable({ providedIn: "root" })
@@ -21,5 +22,19 @@ export class CoursesService {
     return this.httpClient
       .put(`/api/courses/${courseId}`, changes)
       .pipe(shareReplay());
+  }
+
+  searchLessons(search: string): Observable<Lesson[]> {
+    return this.httpClient
+      .get<Lesson[]>("/api/lessons", {
+        params: {
+          filter: search,
+          pageSize: "100",
+        },
+      })
+      .pipe(
+        map((res) => res["payload"]),
+        shareReplay()
+      );
   }
 }

@@ -43,7 +43,7 @@ export class AuthStore {
 
   logout() {
     this.userSubject.next(null);
-    // Delete the ite in LS
+    // Delete the user info from LS
     localStorage.removeItem(AUTH_DATA);
   }
 }
