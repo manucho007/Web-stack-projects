@@ -4,3 +4,5 @@
 - Shopping Cart with React and TypeScript
 - NgRx (with NgRx Data) - The Complete Guide
 - Reactive Angular Course
+- The RxJs In Practice Course
+- Understanding TypeScript 2021
