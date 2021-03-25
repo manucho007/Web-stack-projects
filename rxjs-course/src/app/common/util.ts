@@ -7,7 +7,14 @@ export const createHttpObservable = (url: string): Observable<any> => {
     const controller = new AbortController();
     const signal = controller.signal;
     fetch(url, { signal })
-      .then((res) => res.json())
+      .then((res) => {
+        // Adding error handling in case of non-fatal error such as 500 error
+        if (res.ok) {
+          return res.json();
+        } else {
+          observer.error("Request Failed with status code: " + res.status);
+        }
+      })
       .then((body) => {
         observer.next(body);
         // We complete the observable

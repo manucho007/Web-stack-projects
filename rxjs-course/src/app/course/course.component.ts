@@ -47,11 +47,10 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     //   Create a stream from the input
-    const searchLessons$ = fromEvent<any>(
-      this.input.nativeElement,
-      "keyup"
-    ).pipe(
+    this.lessons$ = fromEvent<any>(this.input.nativeElement, "keyup").pipe(
       map((event) => event.target.value),
+      // begin with an empty string for the search
+      startWith(""),
       //   Instead of sending too many http request we introduce a delay of 400 ms
       debounceTime(400),
       // Avoid sending duplicated values as requests,
@@ -59,10 +58,6 @@ export class CourseComponent implements OnInit, AfterViewInit {
       // If the search word changes we unsubscribe from the http request and make a new one
       switchMap((search) => this.loadLessons(search))
     );
-
-    const initialLessons$ = this.loadLessons();
-
-    this.lessons$ = concat(initialLessons$, searchLessons$);
   }
 
   loadLessons(search: string = ""): Observable<Lesson[]> {
