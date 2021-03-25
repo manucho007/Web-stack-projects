@@ -21,7 +21,7 @@ import {
   shareReplay,
   throttleTime,
 } from "rxjs/operators";
-import { merge, fromEvent, Observable, concat } from "rxjs";
+import { merge, fromEvent, Observable, concat, forkJoin } from "rxjs";
 import { Lesson } from "../model/lesson";
 import { createHttpObservable } from "../common/util";
 import { debug, RxJsLoggingLevel, setRxJsLoggingLevel } from "../common/debug";
@@ -50,6 +50,17 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
     // Change the application debug level
     setRxJsLoggingLevel(RxJsLoggingLevel.TRACE);
+
+    // Example of forkJoin for the observables - useful for executing obs in paralel
+    // Both are executed in paralel but the values were emited only after both obs were completed
+    // forkJoin([this.course$, this.lessons$])
+    //   .pipe(
+    //     tap(([course, lessons]) => {
+    //       console.log("course:", course);
+    //       console.log("lessons:", lessons);
+    //     })
+    //   )
+    //   .subscribe();
   }
 
   ngAfterViewInit() {
