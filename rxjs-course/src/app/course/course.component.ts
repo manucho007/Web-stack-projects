@@ -19,10 +19,12 @@ import {
   withLatestFrom,
   concatAll,
   shareReplay,
+  throttleTime,
 } from "rxjs/operators";
 import { merge, fromEvent, Observable, concat } from "rxjs";
 import { Lesson } from "../model/lesson";
 import { createHttpObservable } from "../common/util";
+import { debug, RxJsLoggingLevel, setRxJsLoggingLevel } from "../common/debug";
 
 @Component({
   selector: "course",
@@ -42,7 +44,12 @@ export class CourseComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.courseId = this.route.snapshot.params["id"];
 
-    this.course$ = createHttpObservable(`/api/courses/${this.courseId}`);
+    this.course$ = createHttpObservable(`/api/courses/${this.courseId}`).pipe(
+      debug(RxJsLoggingLevel.INFO, "course value")
+    );
+
+    // Change the application debug level
+    setRxJsLoggingLevel(RxJsLoggingLevel.TRACE);
   }
 
   ngAfterViewInit() {
@@ -51,12 +58,16 @@ export class CourseComponent implements OnInit, AfterViewInit {
       map((event) => event.target.value),
       // begin with an empty string for the search
       startWith(""),
-      //   Instead of sending too many http request we introduce a delay of 400 ms
+      debug(RxJsLoggingLevel.TRACE, "search"),
+      //   debounce waits until the obs become stable before performing an action
       debounceTime(400),
+      // Throtle can be used too but better debounce in this case so it ensures we get the final value
+      // throttleTime(400),
       // Avoid sending duplicated values as requests,
       distinctUntilChanged(),
       // If the search word changes we unsubscribe from the http request and make a new one
-      switchMap((search) => this.loadLessons(search))
+      switchMap((search) => this.loadLessons(search)),
+      debug(RxJsLoggingLevel.DEBUG, "lessons value")
     );
   }
 
