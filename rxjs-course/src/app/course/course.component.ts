@@ -70,9 +70,9 @@ export class CourseComponent implements OnInit, AfterViewInit {
       // begin with an empty string for the search
       startWith(""),
       debug(RxJsLoggingLevel.TRACE, "search"),
-      //   debounce waits until the obs become stable before performing an action
+      //   debounce waits until the obs become stable before performing an action - does get the final value
       debounceTime(400),
-      // Throtle can be used too but better debounce in this case so it ensures we get the final value
+      // Still waits 400 ms but might not get the final value only the one it was at the 400 ms mark
       // throttleTime(400),
       // Avoid sending duplicated values as requests,
       distinctUntilChanged(),

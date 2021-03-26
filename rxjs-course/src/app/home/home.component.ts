@@ -11,6 +11,7 @@ import {
   tap,
 } from "rxjs/operators";
 import { createHttpObservable } from "../common/util";
+import { Store } from "../common/store.service";
 
 @Component({
   selector: "home",
@@ -20,47 +21,13 @@ import { createHttpObservable } from "../common/util";
 export class HomeComponent implements OnInit {
   beginnerCourses$: Observable<Course[]>;
   advancedCourses$: Observable<Course[]>;
-  constructor() {}
+  constructor(private store: Store) {}
 
   ngOnInit() {
-    // Creating our custom http observable
-    const http$ = createHttpObservable("/api/courses");
+    const courses$ = this.store.courses$;
 
-    // Map the courses
-    const courses$ = http$.pipe(
-      // catchError((err) => {
-      //   // Recovery Observable error handling  with a value
-      //   // of([])
-      //   // In this case we'll handle the error locally
-      //   console.log("Error Ocurred", err);
-      //   // An observable needs to be emitted, in this case this one will not emit a new value and errors out
-      //   return throwError(err);
-      // }),
-      // this will execute when the obs finishes executing or it errors out
-      finalize(() => console.log("finalize executed")),
-      map((res) => res["payload"]),
-      // Avoid multiple subscriptions
-      shareReplay(),
-      // Retry error handle strategy
-      // creates a new stream each time the stream throws an error until it doesn't error out
-      retryWhen((errors) =>
-        errors.pipe(
-          // Each time there is an error it'll wait 2 seconds before trying again
-          delayWhen(() => timer(2000))
-        )
-      )
-    );
+    this.beginnerCourses$ = this.store.selectBeginnerCourses();
 
-    this.beginnerCourses$ = courses$.pipe(
-      map((courses) =>
-        courses.filter((course) => course.category == "BEGINNER")
-      )
-    );
-
-    this.advancedCourses$ = courses$.pipe(
-      map((courses) =>
-        courses.filter((course) => course.category == "ADVANCED")
-      )
-    );
+    this.advancedCourses$ = this.store.selectAdvancedCourses();
   }
 }
