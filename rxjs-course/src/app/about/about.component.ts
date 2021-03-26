@@ -1,5 +1,13 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { fromEvent, interval, merge, noop, Observable, timer } from "rxjs";
+import {
+  fromEvent,
+  interval,
+  merge,
+  noop,
+  Observable,
+  ReplaySubject,
+  timer,
+} from "rxjs";
 import { map, mergeMap } from "rxjs/operators";
 import { createHttpObservable } from "../common/util";
 
@@ -15,7 +23,32 @@ export class AboutComponent implements OnInit {
     // this.executedObservables();
     // this.mergeObs();
     this.cancelSub();
+    this.subjectsFunction();
   }
+
+  subjectsFunction = () => {
+    // Normal subject doesn't support late subscribtions
+    // const subject = new Subject();
+    // BehaviorSubject does support late sub and gets the last value emited before the new subscription
+    // const subject = new BehaviorSubject(0);
+    // Asyncsubject will wait for completion to get access to the last value emited NEEDS COMPLETION
+    // const subject = new AsyncSubject();
+    // ReplaySubject will replay the entire obs so a late subscriber will get access to the whole obs values NO NEED FOR COMPLETION
+    const subject = new ReplaySubject();
+
+    const series$ = subject.asObservable();
+    series$.subscribe((val) => console.log("early sub" + val));
+    subject.next(1);
+    subject.next(2);
+    subject.next(3);
+    // completion will not allow new subscriber to emit new values or get previous values
+    // subject.complete();
+    setTimeout(() => {
+      series$.subscribe((val) => console.log("late sub" + val));
+      subject.next(4);
+      subject.complete();
+    }, 300);
+  };
 
   cancelSub = () => {
     const http$ = createHttpObservable("/api/courses");
