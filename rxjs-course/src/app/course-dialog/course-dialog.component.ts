@@ -21,6 +21,7 @@ import {
 } from "rxjs/operators";
 import { fromPromise } from "rxjs/internal-compatibility";
 import { saveCourse } from "../../../server/save-course.route";
+import { Store } from "../common/store.service";
 
 @Component({
   selector: "course-dialog",
@@ -38,7 +39,8 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CourseDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) course: Course
+    @Inject(MAT_DIALOG_DATA) course: Course,
+    private store: Store
   ) {
     this.course = course;
 
@@ -86,5 +88,12 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
 
   close() {
     this.dialogRef.close();
+  }
+
+  save() {
+    this.store.saveCourse(this.course.id, this.form.value).subscribe(
+      () => this.dialogRef.close(),
+      (err) => console.log("Error saving course", err)
+    );
   }
 }

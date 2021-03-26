@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, throwError, timer } from "rxjs";
+import { fromPromise } from "rxjs/internal-compatibility";
 import {
   catchError,
   delayWhen,
@@ -70,6 +71,31 @@ export class Store {
   filterByCategory(category: string) {
     return this.courses$.pipe(
       map((courses) => courses.filter((course) => course.category == category))
+    );
+  }
+
+  saveCourse(courseId: number, changes: Partial<Course>) {
+    // Get the courses from store
+    const courses = this.subject.getValue();
+    // Find the course
+    const courseIndex = courses.findIndex((course) => course.id == courseId);
+    // we'll mutate the courses so the subscribers will get notified of the changes
+    const newCourses = courses.slice(0);
+    newCourses[courseIndex] = {
+      ...courses[courseIndex],
+      ...changes,
+    };
+    // Now the courses containing the changes made to the course are emited
+    this.subject.next(newCourses);
+    // Now the put request to the server is made
+    return fromPromise(
+      fetch(`/api/courses/${courseId}`, {
+        method: "PUT",
+        body: JSON.stringify(changes),
+        headers: {
+          "content-type": "application/json",
+        },
+      })
     );
   }
 }
