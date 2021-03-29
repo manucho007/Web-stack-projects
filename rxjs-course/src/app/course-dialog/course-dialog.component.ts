@@ -18,6 +18,7 @@ import {
   exhaustMap,
   filter,
   mergeMap,
+  switchMap,
 } from "rxjs/operators";
 import { fromPromise } from "rxjs/internal-compatibility";
 import { saveCourse } from "../../../server/save-course.route";
@@ -59,32 +60,18 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
         filter(() => this.form.valid),
         // concatMap waits for one obs to complete before subscribing and using the next observable
         // concatMap((changes) => this.saveCourse(changes))
-        // To avoid the sequential http calls in this case better to use mergeMap
-        mergeMap((changes) => this.saveCourse(changes))
+        // To avoid the sequential http calls better to use mergeMap
+        // mergeMap((changes) => this.store.saveCourse(this.course.id, changes)),
+        // IN this case to avoid too many http requests we use exhaustMap
+        // ExhaustMap avoid the situation of subscribing multiple times to an ongoing obs, this will ignore the subs until the
+        // it finishes the original one then it will be posible to subscribe again
+        // Nono better switchMap because it emits values only from the most recently projected Observable.
+        switchMap((changes) => this.store.saveCourse(this.course.id, changes))
       )
       .subscribe();
-  }
-  saveCourse(changes) {
-    return fromPromise(
-      fetch(`/api/courses/${this.course.id}`, {
-        method: "PUT",
-        body: JSON.stringify(changes),
-        headers: {
-          "content-type": "application/json",
-        },
-      })
-    );
   }
 
-  ngAfterViewInit() {
-    fromEvent(this.saveButton.nativeElement, "click")
-      .pipe(
-        //   exhaustMap avoid the situation of subscribing multiple times to an ongoing obs, this will ignore the subs until the
-        // it finishes the original one then it will be posible to subscribe again
-        exhaustMap(() => this.saveCourse(this.form.value))
-      )
-      .subscribe();
-  }
+  ngAfterViewInit() {}
 
   close() {
     this.dialogRef.close();

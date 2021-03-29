@@ -4,6 +4,7 @@ import { fromPromise } from "rxjs/internal-compatibility";
 import {
   catchError,
   delayWhen,
+  filter,
   finalize,
   map,
   retryWhen,
@@ -22,21 +23,25 @@ export class Store {
   courses$: Observable<Course[]> = this.subject.asObservable();
 
   init() {
-    // Cleaned version for store
+    // Creating our custom http observable
     const http$ = createHttpObservable("/api/courses");
     http$
       .pipe(
+        catchError((err) => {
+          // Recovery Observable error handling  with a value
+          // of([])
+          console.log("Error Ocurred", err);
+          // An observable needs to be emitted, in this case this one will not emit a new value and errors out
+          return throwError(err);
+        }),
         map((res) => Object.values(res["payload"])),
-        debug(RxJsLoggingLevel.INFO, "Courses from store")
+        debug(RxJsLoggingLevel.DEBUG, "Courses from store")
       )
       .subscribe((courses) => this.subject.next(courses));
 
-    //   // Creating our custom http observable
-    // const http$ = createHttpObservable("/api/courses");
-
     // // Map the courses
     // const courses$ = http$.pipe(
-    //   // This is one strategy to deal with erros
+    //   // This is one strategy to deal with errors
     //   catchError((err) => {
     //     // Recovery Observable error handling  with a value
     //     // of([])
@@ -59,6 +64,14 @@ export class Store {
     // //     )
     // //   )
     // );
+  }
+
+  selectCourseById(courseId: number): Observable<Course> {
+    return this.courses$.pipe(
+      map((courses) => courses.find((course) => course.id == courseId)),
+      // Filter out first undefined value
+      filter((course) => !!course)
+    );
   }
 
   selectBeginnerCourses() {

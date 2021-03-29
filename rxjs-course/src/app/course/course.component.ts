@@ -20,11 +20,14 @@ import {
   concatAll,
   shareReplay,
   throttleTime,
+  first,
+  take,
 } from "rxjs/operators";
 import { merge, fromEvent, Observable, concat, forkJoin } from "rxjs";
 import { Lesson } from "../model/lesson";
 import { createHttpObservable } from "../common/util";
 import { debug, RxJsLoggingLevel, setRxJsLoggingLevel } from "../common/debug";
+import { Store } from "../common/store.service";
 
 @Component({
   selector: "course",
@@ -32,25 +35,36 @@ import { debug, RxJsLoggingLevel, setRxJsLoggingLevel } from "../common/debug";
   styleUrls: ["./course.component.css"],
 })
 export class CourseComponent implements OnInit, AfterViewInit {
-  courseId: string;
+  courseId: number;
   course$: Observable<Course>;
   lessons$: Observable<Lesson[]>;
 
   @ViewChild("searchInput", { static: true })
   input: ElementRef;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private store: Store) {}
 
   ngOnInit() {
     this.courseId = this.route.snapshot.params["id"];
 
-    this.course$ = createHttpObservable(`/api/courses/${this.courseId}`).pipe(
-      debug(RxJsLoggingLevel.INFO, "course value")
+    this.course$ = this.store.selectCourseById(this.courseId).pipe(
+      // Forces the obs to complete after emiting the first value - could be first() too
+      take(1)
     );
 
     // Change the application debug level
     setRxJsLoggingLevel(RxJsLoggingLevel.TRACE);
+  }
 
+  combineObs() {
+    // Combine obs always getting the latest version of the second obs(Course)
+    // this.loadLessons().pipe(
+    //   withLatestFrom(this.course$)
+    // ).
+    // subscribe(([lessons,course])=>{
+    //   console.log(lessons);
+    //   console.log(course);
+    // })
     // Example of forkJoin for the observables - useful for executing obs in paralel
     // Both are executed in paralel but the values were emited only after both obs were completed
     // forkJoin([this.course$, this.lessons$])
