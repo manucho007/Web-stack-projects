@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { NgForm } from '@angular/forms';
 import { User } from '../models/User';
 
 @Component({
@@ -18,7 +18,7 @@ export class UsersComponent implements OnInit {
   loaded: boolean = false;
   enableAdd: boolean = false;
   showUserForm: boolean = false;
-  @ViewChild('userForm') form: any;
+  @ViewChild('userForm') form: NgForm;
 
   constructor() {}
 
@@ -53,29 +53,31 @@ export class UsersComponent implements OnInit {
     this.loaded = true;
   }
 
-  // addUser() {
-  //   this.user.isActive = true;
-  //   this.user.registered = new Date();
-
-  //   this.users.unshift(this.user);
-
-  //   this.user = {
-  //     firstName: '',
-  //     lastName: '',
-  //     email: ''
-  //   }
-  // }
-
-  // onSubmit({ value, valid }: { value: User; valid: boolean }) {
-  //   if (!valid) {
+  onSubmit(userForm: NgForm) {
+    if (!userForm.valid) {
+      console.log('Form is not valid');
+      console.log(userForm.value);
+    } else {
+      userForm.value.isActive = true;
+      userForm.value.registered = new Date();
+      userForm.value.hide = true;
+      this.users.unshift(userForm.value);
+      this.form.reset();
+    }
+  }
+  // same but passing the event instead of userForm
+  // onSubmit(e: Event) {
+  //   e.preventDefault();
+  //   if (!this.form.valid) {
   //     console.log('Form is not valid');
   //   } else {
-  //     value.isActive = true;
-  //     value.registered = new Date();
-  //     value.hide = true;
-
-  //     this.users.unshift(value);
-
+  //     const newUser: User = {
+  //       ...this.form.value,
+  //       hide: true,
+  //       registered: new Date(),
+  //       isActive: true,
+  //     };
+  //     this.users.unshift(newUser);
   //     this.form.reset();
   //   }
   // }
