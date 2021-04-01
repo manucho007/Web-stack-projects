@@ -10,6 +10,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { UserService } from './services/user.service';
 
 @NgModule({
   declarations: [AppComponent, UserComponent, UsersComponent, NavbarComponent],
@@ -21,7 +22,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     CommonModule,
     FontAwesomeModule,
   ],
-  providers: [],
+  providers: [UserService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
