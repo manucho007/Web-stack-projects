@@ -11,9 +11,20 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { UserService } from './services/user.service';
+import { PostsComponent } from './components/posts/posts.component';
+import { PostService } from './services/post.service';
+import { HttpClientModule } from '@angular/common/http';
+import { PostFormComponent } from './components/post-form/post-form.component';
 
 @NgModule({
-  declarations: [AppComponent, UserComponent, UsersComponent, NavbarComponent],
+  declarations: [
+    AppComponent,
+    UserComponent,
+    UsersComponent,
+    NavbarComponent,
+    PostsComponent,
+    PostFormComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -21,8 +32,9 @@ import { UserService } from './services/user.service';
     FormsModule,
     CommonModule,
     FontAwesomeModule,
+    HttpClientModule,
   ],
-  providers: [UserService],
+  providers: [UserService, PostService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
