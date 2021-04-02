@@ -15,6 +15,9 @@ import { PostsComponent } from './components/posts/posts.component';
 import { PostService } from './services/post.service';
 import { HttpClientModule } from '@angular/common/http';
 import { PostFormComponent } from './components/post-form/post-form.component';
+import { HomeComponent } from './components/home/home.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
+import { PostComponent } from './components/post/post.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +27,9 @@ import { PostFormComponent } from './components/post-form/post-form.component';
     NavbarComponent,
     PostsComponent,
     PostFormComponent,
+    HomeComponent,
+    NotFoundComponent,
+    PostComponent,
   ],
   imports: [
     BrowserModule,
