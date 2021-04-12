@@ -6,3 +6,4 @@
 - Reactive Angular Course
 - The RxJs In Practice Course
 - Understanding TypeScript 2021
+- Unit Testing in Angular | Pluralsight
