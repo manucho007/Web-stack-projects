@@ -66,4 +66,67 @@ describe("Heroes Component (Deep Test)", () => {
       expect(heroComponentsDEs[i].componentInstance.hero).toEqual(HEROES[i]);
     }
   });
+
+  // Testing DOM interactions one way
+  it(`Should call heroService.deleteHero when the Hero Component's delete button is clicked - Triggering an event  `, () => {
+    mockHeroService.getHeroes.and.returnValue(of(HEROES));
+    // This watches if the method is invoked
+    spyOn(fixture.componentInstance, "delete");
+
+    // Run ngOnInit
+    fixture.detectChanges();
+
+    // Access the properties from the child component
+    const heroComponents = fixture.debugElement.queryAll(
+      By.directive(HeroComponent)
+    );
+    heroComponents[0]
+      .query(By.css("button"))
+      .triggerEventHandler("click", { stopPropagation: () => {} });
+
+    // Check if the method have been called with the proper hero
+    expect(fixture.componentInstance.delete).toHaveBeenCalledWith(HEROES[0]);
+  });
+
+  // Testing DOM interactions another way
+  it(`Should call heroService.deleteHero when the Hero Component's delete button is clicked - using emit()`, () => {
+    mockHeroService.getHeroes.and.returnValue(of(HEROES));
+    // This watches if the method is invoked
+    spyOn(fixture.componentInstance, "delete");
+
+    // Run ngOnInit
+    fixture.detectChanges();
+
+    // Access the properties from the child component
+    const heroComponents = fixture.debugElement.queryAll(
+      By.directive(HeroComponent)
+    );
+    // (<HeroComponent>heroComponents[0].componentInstance).delete.emit(undefined);
+    // or this works just as well
+    heroComponents[0].triggerEventHandler("delete", null);
+
+    // Check if the method have been called with the proper hero
+    expect(fixture.componentInstance.delete).toHaveBeenCalledWith(HEROES[0]);
+  });
+
+  it("Should add a new hero to the hero list when the add button is clicked", () => {
+    mockHeroService.getHeroes.and.returnValue(of(HEROES));
+    // Run ngOnInit
+    fixture.detectChanges();
+    const name = "Mr Ice";
+    mockHeroService.addHero.and.returnValue(of({ id: 5, name, strength: 10 }));
+    // Simulates typing a name in the input field
+    const inputElement = fixture.debugElement.query(By.css("input"))
+      .nativeElement;
+    const addButton = fixture.debugElement.queryAll(By.css("button"))[0];
+    inputElement.value = name;
+
+    addButton.triggerEventHandler("click", null);
+
+    fixture.detectChanges();
+    // Check if the new list contains the value just added
+    const heroText = fixture.debugElement.query(By.css("ul")).nativeElement
+      .textContent;
+    expect(heroText).toContain(name);
+  });
 });
