@@ -1,5 +1,12 @@
 import { Location } from "@angular/common";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import {
+  async,
+  ComponentFixture,
+  fakeAsync,
+  flush,
+  TestBed,
+  tick,
+} from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { of } from "rxjs";
@@ -46,4 +53,29 @@ describe("Hero Detail component", () => {
       "SUPERDUDE"
     );
   });
+
+  //   Async test
+  it("Should call updateHero when save is called w/fakeasync", fakeAsync(() => {
+    mockHeroService.updateHero.and.returnValue(of({}));
+    fixture.detectChanges();
+    // Call save
+    fixture.componentInstance.save();
+    // fast forward 250 ms
+    // tick(250);
+    // Flush is for when we don't know how much time do we need
+    flush();
+    expect(mockHeroService.updateHero).toHaveBeenCalled();
+  }));
+
+  it("Should call updateHero when save is called w/async", async(() => {
+    mockHeroService.updateHero.and.returnValue(of({}));
+    fixture.detectChanges();
+    // Call save
+    fixture.componentInstance.save();
+
+    // This waits until all promises get resolved to call what's inside
+    fixture.whenStable().then(() => {
+      expect(mockHeroService.updateHero).toHaveBeenCalled();
+    });
+  }));
 });
