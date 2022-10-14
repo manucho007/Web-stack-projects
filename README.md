@@ -7,3 +7,4 @@
 - The RxJs In Practice Course
 - Understanding TypeScript 2021
 - Unit Testing in Angular | Pluralsight
+- React Router v6 | Web Dev Simpified
